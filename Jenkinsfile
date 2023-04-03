@@ -3,7 +3,7 @@ pipeline {
   stages {
     stage('instalation') {
       steps {
-        ansiblePlaybook(become: true, playbook: 'playbook', inventory: 'inventory', sudo: true)
+        sh 'ansible-playbook -i inventory -m ping --auto-approve'
       }
     }
 
