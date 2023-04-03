@@ -1,0 +1,60 @@
+---
+- name: 'tester le playbook VS_code'
+  hosts: all
+  become: yes
+  tasks:
+
+    - name: 'mise a jour'
+      apt: 
+       update_cache: yes
+  
+    - name: Installation d'Apache2
+      apt:
+       name: apache2
+       state: present
+  
+    - name: lancer Apache2
+      service:
+       name: apache2
+       state: started
+  
+    - name: Créer le répertoire
+      file:
+        path: /var/www/example.com
+        state: directory
+  
+    - name: Créer un fichier et écrire à l'intérieur
+      copy:
+        dest: /var/www/example.com/index.html
+        content: "Hello word"
+  
+    - name: Remplacer une chaîne de caractères dans un fichier
+      replace:
+        path: /etc/apache2/sites-available/000-default.conf
+        regexp: '/var/www/html'
+        replace: '/var/www/example.com'
+  
+    - name: remplacer la chaine de caractères dans l'autre fichier
+      replace:
+        path: /etc/apache2/sites-available/default-ssl.conf
+        regexp: '/var/www/html'
+        replace: '/var/www/example.com'
+  
+    - name: Obtenir le répertoire de travail actuel
+      shell: pwd 
+      register: pwd_output    
+
+    - name: Vérifier si la configuration Apache2 a été modifiée
+      stat:
+       path: /etc/apache2/apache2.conf
+      register: apache_conf_changed
+
+    - name: Redémarrer le service Apache2
+      service:
+       name: apache2
+       state: restarted
+      when: apache_conf_changed.changed == false
+
+
+
+
