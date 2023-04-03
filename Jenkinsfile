@@ -3,7 +3,7 @@ pipeline {
   stages {
     stage('instalation') {
       steps {
-        sh 'ansible all -i inventory -m ping --auto-approve'
+        sh 'ansible-playbook -i inventory playbook.yaml'
       }
     }
 
